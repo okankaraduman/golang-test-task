@@ -18,3 +18,16 @@ services:
     ports:
       - 6379:6379
     restart: always
+  api:
+    build: .
+    container_name: app
+    image: app
+    environment:
+      REDIS_PASSWORD: test
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+      - rabbitmq
+
+
