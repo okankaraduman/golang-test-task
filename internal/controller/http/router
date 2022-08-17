@@ -1,0 +1,49 @@
+// Package v1 implements routing paths. Each services in own file.
+package v1
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	httpSwagger "github.com/swaggo/http-swagger"
+
+	// Swagger docs.
+
+	_ "github.com/okankaraduman/gowit/docs"
+	"github.com/okankaraduman/gowit/internal/usecase"
+	"github.com/okankaraduman/gowit/pkg/logger"
+)
+
+// NewRouter -.
+// Swagger spec:
+// @title       Go Chat App
+// @description Creates a new router
+// @version     0.1
+// @host        localhost:8080
+// @BasePath    api/v1
+func NewRouter(gin *gin.Engine, l logger.Interface, repo KeyValueRepo) {
+
+	r := gin.New()
+	// Set a timeout value on the request context (ctx), that will signal
+	// through ctx.Done() that the request has timed out and further
+	// processing should be stopped.
+	r.Use(middleware.Timeout(60 * time.Second))
+
+	// Swagger
+	swaggerHandler := httpSwagger.Handler()
+
+	r.GET("/swagger/*", swaggerHandler)
+
+	// K8s probe
+	r.GET("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		resp := Response{Resp: w}
+		resp.Text(http.StatusOK, "200 OK", "text/plain")
+	})
+	// Prometheus metrics
+	muxChi.Handle("/metrics", promhttp.Handler())
+
+	r.POST("/message", http.pushMessage)
+	r.GET("/message/list", http.getMessage)
+
+}

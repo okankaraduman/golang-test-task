@@ -1,15 +1,18 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"log"
+
+	"github.com/okankaraduman/golang-test-task/config"
+	"github.com/okankaraduman/golang-test-task/internal/app"
 )
 
 func main() {
-	r := gin.Default()
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("Config error: %s", err)
+	}
 
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(200, "worked")
-	})
-
-	r.Run()
+	// Run
+	app.Run(cfg)
 }

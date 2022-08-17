@@ -1,0 +1,20 @@
+app:
+  name: 'go-chat-api'
+  version: '1.0.0'
+
+http:
+  port: '8080'
+
+logger:
+  log_level: 'debug'
+  rollbar_env: 'go-chat-api'
+
+redis:
+  host: 'cache'
+  port: '6379'
+  pool_max: 30
+
+rabbitmq:
+  rpc_server_exchange: 'rpc_server'
+  rpc_client_exchange: 'rpc_client'
+  
